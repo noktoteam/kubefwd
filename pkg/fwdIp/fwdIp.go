@@ -41,7 +41,7 @@ func GetIp(svcName string, podName string, clusterN int, NamespaceN int) (net.IP
 	}
 
 	// @TODO check ranges
-	ip := net.IP{127, 1, 27, 1}.To4()
+	ip := net.IP{127, 0, 0, 1}.To4()
 	ip[1] += byte(clusterN)
 	ip[2] += byte(NamespaceN)
 	ip[3] += byte(ipRegistry.inc[clusterN][NamespaceN])
