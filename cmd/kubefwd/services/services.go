@@ -16,6 +16,7 @@ limitations under the License.
 package services
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
@@ -23,16 +24,12 @@ import (
 	"sync"
 	"syscall"
 	"time"
-	"context"
 
 	"github.com/bep/debounce"
-	"github.com/txn2/kubefwd/pkg/fwdcfg"
-	"github.com/txn2/kubefwd/pkg/fwdhost"
-	"github.com/txn2/kubefwd/pkg/fwdport"
-	"github.com/txn2/kubefwd/pkg/fwdservice"
-	"github.com/txn2/kubefwd/pkg/fwdsvcregistry"
-	"github.com/txn2/kubefwd/pkg/utils"
-	"github.com/txn2/txeh"
+	"github.com/noktoteam/kubefwd/pkg/fwdcfg"
+	"github.com/noktoteam/kubefwd/pkg/fwdport"
+	"github.com/noktoteam/kubefwd/pkg/fwdservice"
+	"github.com/noktoteam/kubefwd/pkg/fwdsvcregistry"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -130,44 +127,7 @@ func runCmd(cmd *cobra.Command, _ []string) {
 		log.SetLevel(log.DebugLevel)
 	}
 
-	hasRoot, err := utils.CheckRoot()
-
-	if !hasRoot {
-		log.Errorf(`
-This program requires superuser privileges to run. These
-privileges are required to add IP address aliases to your
-loopback interface. Superuser privileges are also needed
-to listen on low port numbers for these IP addresses.
-
-Try:
- - sudo -E kubefwd services (Unix)
- - Running a shell with administrator rights (Windows)
-
-`)
-		if err != nil {
-			log.Fatalf("Root check failure: %s", err.Error())
-		}
-		return
-	}
-
 	log.Println("Press [Ctrl-C] to stop forwarding.")
-	log.Println("'cat /etc/hosts' to see all host entries.")
-
-	hostFile, err := txeh.NewHostsDefault()
-	if err != nil {
-		log.Fatalf("HostFile error: %s", err.Error())
-		os.Exit(1)
-	}
-
-	log.Printf("Loaded hosts file %s\n", hostFile.ReadFilePath)
-
-	msg, err := fwdhost.BackupHostFile(hostFile)
-	if err != nil {
-		log.Fatalf("Error backing up hostfile: %s\n", err.Error())
-		os.Exit(1)
-	}
-
-	log.Printf("HostFile management: %s", msg)
 
 	if domain != "" {
 		log.Printf("Adding custom domain %s to all forwarded entries\n", domain)
@@ -286,7 +246,6 @@ Try:
 				// each cluster and namespace has its own ip range
 				NamespaceIPLock:   &sync.Mutex{},
 				ListOptions:       listOptions,
-				HostFile:          &fwdport.HostFileWithLock{Hosts: hostFile},
 				ClientConfig:      *restConfig,
 				RESTClient:        *restClient,
 				ClusterN:          i,
@@ -316,7 +275,6 @@ Try:
 type NamespaceOpts struct {
 	NamespaceIPLock *sync.Mutex
 	ListOptions     metav1.ListOptions
-	HostFile        *fwdport.HostFileWithLock
 
 	ClientSet    kubernetes.Clientset
 	ClientConfig restclient.Config
@@ -405,7 +363,6 @@ func (opts *NamespaceOpts) AddServiceHandler(obj interface{}) {
 		ClientSet:            opts.ClientSet,
 		Context:              opts.Context,
 		Namespace:            opts.Namespace,
-		Hostfile:             opts.HostFile,
 		ClientConfig:         opts.ClientConfig,
 		RESTClient:           opts.RESTClient,
 		NamespaceN:           opts.NamespaceN,

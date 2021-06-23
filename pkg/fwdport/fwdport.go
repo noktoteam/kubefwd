@@ -6,15 +6,13 @@ import (
 	"net"
 	"net/http"
 	"strconv"
-	"sync"
 	"time"
 
 	"k8s.io/apimachinery/pkg/util/httpstream"
 
+	"github.com/noktoteam/kubefwd/pkg/fwdnet"
+	"github.com/noktoteam/kubefwd/pkg/fwdpub"
 	log "github.com/sirupsen/logrus"
-	"github.com/txn2/kubefwd/pkg/fwdnet"
-	"github.com/txn2/kubefwd/pkg/fwdpub"
-	"github.com/txn2/txeh"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -31,12 +29,6 @@ import (
 type ServiceFWD interface {
 	String() string
 	SyncPodForwards(bool)
-}
-
-// HostFileWithLock
-type HostFileWithLock struct {
-	Hosts *txeh.Hosts
-	sync.Mutex
 }
 
 // HostsParams
@@ -60,7 +52,6 @@ type PortForwardOpts struct {
 	PodPort    string
 	LocalIp    net.IP
 	LocalPort  string
-	HostFile   *HostFileWithLock
 
 	// Context is a unique key (string) in kubectl config representing
 	// a user/cluster combination. Kubefwd uses context as the
@@ -155,13 +146,10 @@ func (pfo *PortForwardOpts) PortForward() error {
 
 	localNamedEndPoint := fmt.Sprintf("%s:%s", pfo.Service, pfo.LocalPort)
 
-	pfo.AddHosts()
-
 	// Wait until the stop signal is received from above
 	go func() {
 		<-pfo.ManualStopChan
 		close(downstreamStopChannel)
-		pfo.removeHosts()
 		pfo.removeInterfaceAlias()
 		close(pfStopChannel)
 
@@ -242,130 +230,6 @@ func (pfo *PortForwardOpts) PortForward() error {
 func (pfo *PortForwardOpts) addHost(host string) {
 	// add to list of hostnames for this port-forward
 	pfo.Hosts = append(pfo.Hosts, host)
-
-	// remove host if it already exists in /etc/hosts
-	pfo.HostFile.Hosts.RemoveHost(host)
-
-	// add host to /etc/hosts
-	pfo.HostFile.Hosts.AddHost(pfo.LocalIp.String(), host)
-}
-
-// AddHosts adds hostname entries to /etc/hosts
-func (pfo *PortForwardOpts) AddHosts() {
-
-	pfo.HostFile.Lock()
-
-	// pfo.Service holds only the service name
-	// start with the smallest allowable hostname
-
-	// bare service name
-	if pfo.ClusterN == 0 && pfo.NamespaceN == 0 {
-		pfo.addHost(pfo.Service)
-
-		if pfo.Domain != "" {
-			pfo.addHost(fmt.Sprintf(
-				"%s.%s",
-				pfo.Service,
-				pfo.Domain,
-			))
-		}
-	}
-
-	// alternate cluster / first namespace
-	if pfo.ClusterN > 0 && pfo.NamespaceN == 0 {
-		pfo.addHost(fmt.Sprintf(
-			"%s.%s",
-			pfo.Service,
-			pfo.Context,
-		))
-	}
-
-	// namespaced without cluster
-	if pfo.ClusterN == 0 {
-		pfo.addHost(fmt.Sprintf(
-			"%s.%s",
-			pfo.Service,
-			pfo.Namespace,
-		))
-
-		pfo.addHost(fmt.Sprintf(
-			"%s.%s.svc",
-			pfo.Service,
-			pfo.Namespace,
-		))
-
-		pfo.addHost(fmt.Sprintf(
-			"%s.%s.svc.cluster.local",
-			pfo.Service,
-			pfo.Namespace,
-		))
-
-		if pfo.Domain != "" {
-			pfo.addHost(fmt.Sprintf(
-				"%s.%s.svc.cluster.%s",
-				pfo.Service,
-				pfo.Namespace,
-				pfo.Domain,
-			))
-		}
-
-	}
-
-	pfo.addHost(fmt.Sprintf(
-		"%s.%s.%s",
-		pfo.Service,
-		pfo.Namespace,
-		pfo.Context,
-	))
-
-	pfo.addHost(fmt.Sprintf(
-		"%s.%s.svc.%s",
-		pfo.Service,
-		pfo.Namespace,
-		pfo.Context,
-	))
-
-	pfo.addHost(fmt.Sprintf(
-		"%s.%s.svc.cluster.%s",
-		pfo.Service,
-		pfo.Namespace,
-		pfo.Context,
-	))
-
-	err := pfo.HostFile.Hosts.Save()
-	if err != nil {
-		log.Error("Error saving hosts file", err)
-	}
-	pfo.HostFile.Unlock()
-}
-
-// removeHosts removes hosts /etc/hosts
-// associated with a forwarded pod
-func (pfo *PortForwardOpts) removeHosts() {
-
-	// we should lock the pfo.HostFile here
-	// because sometimes other goroutine write the *txeh.Hosts
-	pfo.HostFile.Lock()
-	// other applications or process may have written to /etc/hosts
-	// since it was originally updated.
-	err := pfo.HostFile.Hosts.Reload()
-	if err != nil {
-		log.Error("Unable to reload /etc/hosts: " + err.Error())
-		return
-	}
-
-	// remove all hosts
-	for _, host := range pfo.Hosts {
-		log.Debugf("Removing host %s for pod %s in namespace %s from context %s", host, pfo.PodName, pfo.Namespace, pfo.Context)
-		pfo.HostFile.Hosts.RemoveHost(host)
-	}
-
-	// fmt.Printf("Delete Host And Save !\r\n")
-	err = pfo.HostFile.Hosts.Save()
-	if err != nil {
-		log.Errorf("Error saving /etc/hosts: %s\n", err.Error())
-	}
-	pfo.HostFile.Unlock()
 }
 
 // removeInterfaceAlias called on stop signal to

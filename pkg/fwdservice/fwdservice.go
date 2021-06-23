@@ -1,16 +1,16 @@
 package fwdservice
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"sync"
 	"time"
-	"context"
 
+	"github.com/noktoteam/kubefwd/pkg/fwdnet"
+	"github.com/noktoteam/kubefwd/pkg/fwdport"
+	"github.com/noktoteam/kubefwd/pkg/fwdpub"
 	log "github.com/sirupsen/logrus"
-	"github.com/txn2/kubefwd/pkg/fwdnet"
-	"github.com/txn2/kubefwd/pkg/fwdport"
-	"github.com/txn2/kubefwd/pkg/fwdpub"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -24,7 +24,6 @@ import (
 type ServiceFWD struct {
 	ClientSet    kubernetes.Clientset
 	ListOptions  metav1.ListOptions
-	Hostfile     *fwdport.HostFileWithLock
 	ClientConfig restclient.Config
 	RESTClient   restclient.RESTClient
 
@@ -74,7 +73,7 @@ type ServiceFWD struct {
 
 /**
 add port map
-@url https://github.com/txn2/kubefwd/issues/121
+@url https://github.com/noktoteam/kubefwd/issues/121
 */
 type PortMap struct {
 	SourcePort string
@@ -303,7 +302,6 @@ func (svcFwd *ServiceFWD) LoopPodsToForward(pods []v1.Pod, includePodNameInHost 
 				PodPort:    podPort,
 				LocalIp:    localIp,
 				LocalPort:  localPort,
-				HostFile:   svcFwd.Hostfile,
 				ClusterN:   svcFwd.ClusterN,
 				NamespaceN: svcFwd.NamespaceN,
 				Domain:     svcFwd.Domain,

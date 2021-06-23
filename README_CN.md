@@ -1,13 +1,13 @@
-[English](https://github.com/txn2/kubefwd/blob/master/README.md)|[中文](https://github.com/txn2/kubefwd/blob/master/README_CN.md)
+[English](https://github.com/noktoteam/kubefwd/blob/master/README.md)|[中文](https://github.com/noktoteam/kubefwd/blob/master/README_CN.md)
 
 实现批量端口转发让本地能方便访问远程Kubernetes服务, 欢迎贡献！
 
-![kubefwd - kubernetes批量端口转发](https://raw.githubusercontent.com/txn2/kubefwd/master/kubefwd-mast2.jpg)
+![kubefwd - kubernetes批量端口转发](https://raw.githubusercontent.com/noktoteam/kubefwd/master/kubefwd-mast2.jpg)
 
-[![GitHub license](https://img.shields.io/github/license/txn2/kubefwd.svg)](https://github.com/txn2/kubefwd/blob/master/LICENSE)
-[![Maintainability](https://api.codeclimate.com/v1/badges/bc696045260db8e0ba89/maintainability)](https://codeclimate.com/github/txn2/kubefwd/maintainability)
-[![Go Report Card](https://goreportcard.com/badge/github.com/txn2/kubefwd)](https://goreportcard.com/report/github.com/txn2/kubefwd)
-[![GitHub release](https://img.shields.io/github/release/txn2/kubefwd.svg)](https://github.com/txn2/kubefwd/releases)
+[![GitHub license](https://img.shields.io/github/license/noktoteam/kubefwd.svg)](https://github.com/noktoteam/kubefwd/blob/master/LICENSE)
+[![Maintainability](https://api.codeclimate.com/v1/badges/bc696045260db8e0ba89/maintainability)](https://codeclimate.com/github/noktoteam/kubefwd/maintainability)
+[![Go Report Card](https://goreportcard.com/badge/github.com/noktoteam/kubefwd)](https://goreportcard.com/report/github.com/noktoteam/kubefwd)
+[![GitHub release](https://img.shields.io/github/release/noktoteam/kubefwd.svg)](https://github.com/noktoteam/kubefwd/releases)
 
 # kubefwd (Kube Forward)
 
@@ -39,7 +39,7 @@ kubectl config current-context
 如果你使用MacOs，并且安装了 [homebrew] ，那么你可以直接使用下面的命令来安装**kubefwd**:
 
 ```bash
-brew install txn2/tap/kubefwd
+brew install noktoteam/tap/kubefwd
 ```
 
 升级:
@@ -65,7 +65,7 @@ scoop update kubefwd
 ```bash
 docker run -it --rm --privileged --name the-project \
     -v "$(echo $HOME)/.kube/":/root/.kube/ \
-    txn2/kubefwd services -n the-project
+    noktoteam/kubefwd services -n the-project
 ```
 
 
@@ -76,10 +76,10 @@ docker exec the-project curl -s elasticsearch:9200
 ```
 
 ## 其它安装方式 (tar.gz, RPM, deb, snap)
-查看在Github上 [releases](https://github.com/txn2/kubefwd/releases) 部分的二进制包。
+查看在Github上 [releases](https://github.com/noktoteam/kubefwd/releases) 部分的二进制包。
 
 ## 贡献
-[Fork kubefwd](https://github.com/txn2/kubefwd) 并构建自定义版本。我们也非常欢迎大家贡献自己的智慧。
+[Fork kubefwd](https://github.com/noktoteam/kubefwd) 并构建自定义版本。我们也非常欢迎大家贡献自己的智慧。
 
 ## 用法
 
@@ -111,7 +111,7 @@ $ kubefwd svc --help
 2019/03/09 21:13:18 |_|\_\\__,_|_.__/ \___|_|   \_/\_/ \__,_|
 2019/03/09 21:13:18
 2019/03/09 21:13:18 Version 1.7.3
-2019/03/09 21:13:18 https://github.com/txn2/kubefwd
+2019/03/09 21:13:18 https://github.com/noktoteam/kubefwd
 2019/03/09 21:13:18
 Forward multiple Kubernetes services from one or more namespaces. Filter services with selector.
 
@@ -201,6 +201,6 @@ Apache License 2.0
 [Kubernetes]:https://kubernetes.io/
 [Kubernetes namespace]:https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
 [homebrew]:https://brew.sh/
-[txn2]:https://txn2.com/
+[noktoteam]:https://noktoteam.com/
 [golang:1.11.5]:https://hub.docker.com/_/golang/
 [Deasil Works, Inc.]:https://deasil.works/

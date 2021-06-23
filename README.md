@@ -1,13 +1,21 @@
-[English](https://github.com/txn2/kubefwd/blob/master/README.md)|[中文](https://github.com/txn2/kubefwd/blob/master/README_CN.md)
+# Nokto Fork Notes
+
+This is forked from the original!
+a) Remove all root-requiring functionality entirely.
+
+
+
+
+[English](https://github.com/noktoteam/kubefwd/blob/master/README.md)|[中文](https://github.com/noktoteam/kubefwd/blob/master/README_CN.md)
 
 Kubernetes port forwarding for local development.
 
-![kubefwd - kubernetes bulk port forwarding](https://raw.githubusercontent.com/txn2/kubefwd/master/kubefwd-mast2.jpg)
+![kubefwd - kubernetes bulk port forwarding](https://raw.githubusercontent.com/noktoteam/kubefwd/master/kubefwd-mast2.jpg)
 
-[![Build Status](https://travis-ci.com/txn2/kubefwd.svg?branch=master)](https://travis-ci.com/txn2/kubefwd)
-[![GitHub license](https://img.shields.io/github/license/txn2/kubefwd.svg)](https://github.com/txn2/kubefwd/blob/master/LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/txn2/kubefwd)](https://goreportcard.com/report/github.com/txn2/kubefwd)
-[![GitHub release](https://img.shields.io/github/release/txn2/kubefwd.svg)](https://github.com/txn2/kubefwd/releases)
+[![Build Status](https://travis-ci.com/noktoteam/kubefwd.svg?branch=master)](https://travis-ci.com/noktoteam/kubefwd)
+[![GitHub license](https://img.shields.io/github/license/noktoteam/kubefwd.svg)](https://github.com/noktoteam/kubefwd/blob/master/LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/noktoteam/kubefwd)](https://goreportcard.com/report/github.com/noktoteam/kubefwd)
+[![GitHub release](https://img.shields.io/github/release/noktoteam/kubefwd.svg)](https://github.com/noktoteam/kubefwd/releases)
 
 # kubefwd (Kube Forward)
 
@@ -36,10 +44,10 @@ Ensure you have a context by running:
 kubectl config current-context
 ```
 
-If you are running MacOS and use [homebrew] you can install **kubefwd** directly from the [txn2] tap:
+If you are running MacOS and use [homebrew] you can install **kubefwd** directly from the [noktoteam] tap:
 
 ```bash
-brew install txn2/tap/kubefwd
+brew install noktoteam/tap/kubefwd
 ```
 
 To upgrade:
@@ -65,7 +73,7 @@ Forward all services from the namespace **the-project** to a Docker container na
 ```bash
 docker run -it --rm --privileged --name the-project \
     -v "$(echo $HOME)/.kube/":/root/.kube/ \
-    txn2/kubefwd services -n the-project
+    noktoteam/kubefwd services -n the-project
 ```
 
 
@@ -76,10 +84,10 @@ docker exec the-project curl -s elasticsearch:9200
 ```
 
 ## Alternative Installs (tar.gz, RPM, deb, snap)
-Check out the [releases](https://github.com/txn2/kubefwd/releases) section on Github for alternative binaries.
+Check out the [releases](https://github.com/noktoteam/kubefwd/releases) section on Github for alternative binaries.
 
 ## Contribute
-[Fork kubefwd](https://github.com/txn2/kubefwd) and build a custom version. We welcome any useful pull requests.
+[Fork kubefwd](https://github.com/noktoteam/kubefwd) and build a custom version. We welcome any useful pull requests.
 
 ## Usage
 
@@ -115,7 +123,7 @@ INFO[20:48:38] |   <| |_| | |_) |  __/  _|\ V  V / (_| |
 INFO[20:48:38] |_|\_\\__,_|_.__/ \___|_|   \_/\_/ \__,_|
 INFO[20:48:38]
 INFO[20:48:38] Version 1.11.0
-INFO[20:48:38] https://github.com/txn2/kubefwd
+INFO[20:48:38] https://github.com/noktoteam/kubefwd
 INFO[20:48:38]
 Forward multiple Kubernetes services from one or more namespaces. Filter services with selector.
 
@@ -197,6 +205,6 @@ Follow me on Twitter: [@cjimti](https://twitter.com/cjimti) ([Craig Johnston](ht
 [namespaces]:https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
 [services]:https://kubernetes.io/docs/concepts/services-networking/service/
 [homebrew]:https://brew.sh/
-[txn2]:https://txn2.com/
+[noktoteam]:https://noktoteam.com/
 [golang:1.11.5]:https://hub.docker.com/_/golang/
 [Deasil Works, Inc.]:https://deasil.works/

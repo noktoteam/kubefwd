@@ -52,16 +52,16 @@ dockers:
     builds:
       - kubefwd
     image_templates:
-      - "txn2/kubefwd:latest"
-      - "txn2/kubefwd:{{ .Tag }}"
-      - "txn2/kubefwd:v{{ .Major }}"
-      - "txn2/kubefwd:amd64-{{ .Tag }}"
-      - "txn2/kubefwd:amd64-v{{ .Major }}"
-      - "txn2/kubefwd:latest_alpine-3"
-      - "txn2/kubefwd:{{ .Tag }}_alpine-3"
-      - "txn2/kubefwd:v{{ .Major }}_alpine-3"
-      - "txn2/kubefwd:amd64-{{ .Tag }}_alpine-3"
-      - "txn2/kubefwd:amd64-v{{ .Major }}_alpine-3"
+      - "noktoteam/kubefwd:latest"
+      - "noktoteam/kubefwd:{{ .Tag }}"
+      - "noktoteam/kubefwd:v{{ .Major }}"
+      - "noktoteam/kubefwd:amd64-{{ .Tag }}"
+      - "noktoteam/kubefwd:amd64-v{{ .Major }}"
+      - "noktoteam/kubefwd:latest_alpine-3"
+      - "noktoteam/kubefwd:{{ .Tag }}_alpine-3"
+      - "noktoteam/kubefwd:v{{ .Major }}_alpine-3"
+      - "noktoteam/kubefwd:amd64-{{ .Tag }}_alpine-3"
+      - "noktoteam/kubefwd:amd64-v{{ .Major }}_alpine-3"
     build_flag_templates:
       - "--label=org.label-schema.schema-version=1.0"
       - "--label=org.label-schema.version={{.Version}}"
@@ -76,11 +76,11 @@ dockers:
     builds:
       - kubefwd
     image_templates:
-      - "txn2/kubefwd:latest_ubuntu-20.04"
-      - "txn2/kubefwd:{{ .Tag }}_ubuntu-20.04"
-      - "txn2/kubefwd:v{{ .Major }}_ubuntu-20.04"
-      - "txn2/kubefwd:amd64-{{ .Tag }}_ubuntu-20.04"
-      - "txn2/kubefwd:amd64-v{{ .Major }}_ubuntu-20.04"
+      - "noktoteam/kubefwd:latest_ubuntu-20.04"
+      - "noktoteam/kubefwd:{{ .Tag }}_ubuntu-20.04"
+      - "noktoteam/kubefwd:v{{ .Major }}_ubuntu-20.04"
+      - "noktoteam/kubefwd:amd64-{{ .Tag }}_ubuntu-20.04"
+      - "noktoteam/kubefwd:amd64-v{{ .Major }}_ubuntu-20.04"
     build_flag_templates:
       - "--label=org.label-schema.schema-version=1.0"
       - "--label=org.label-schema.version={{.Version}}"
@@ -100,11 +100,11 @@ archives:
 
 nfpms:
   - file_name_template: '{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-    homepage:  https://github.com/txn2/kubefwd
-    description: Kubernetes bulk port forwarding utility.
-    maintainer: Craig Johnston https://twitter.com/cjimti
+    homepage:  https://github.com/noktoteam/kubefwd
+    description: Kubernetes bulk port forwarding utility (fork txn2/kubefwd)
+    maintainer: Nick Cooper
     license: Apache 2.0
-    vendor: https://github.com/txn2
+    vendor: https://github.com/noktoteam
     formats:
       - apk
       - deb
@@ -114,20 +114,20 @@ nfpms:
 
 release:
   github:
-    owner: txn2
+    owner: noktoteam
     name: kubefwd
   name_template: "{{.ProjectName}}-v{{.Version}} {{.Env.USER}}"
 
 brews:
   - name: kubefwd
     tap:
-      owner: txn2
+      owner: noktoteam
       name: homebrew-tap
     commit_author:
-      name: Craig Johnston
-      email: cj@imti.co
+      name: Nick Cooper
+      email: nick@nokto.ai
     folder: Formula
-    homepage: https://github.com/txn2/kubefwd
+    homepage: https://github.com/noktoteam/kubefwd
     description: "Kubernetes bulk port forwarding utility."
     skip_upload: false
     dependencies:
